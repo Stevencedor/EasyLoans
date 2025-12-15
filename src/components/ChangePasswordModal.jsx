@@ -11,12 +11,13 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            alert('Las contraseñas no coinciden');
+            
+            toast.error('Passwords don\'t match');
             return;
         }
 
         if (newPassword.length < 6) {
-            alert('La contraseña debe tener al menos 6 caracteres');
+            toast.error('Password must be at least 6 characters long');
             return;
         }
 
@@ -40,11 +41,11 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
 
             if (error) throw error;
 
-            alert('Contraseña actualizada exitosamente');
+            toast.success('Password updated successfully');
             onPasswordChanged();
         } catch (error) {
             console.error('Error updating password:', error);
-            alert('Error al actualizar contraseña: ' + error.message);
+            toast.error('Error updating password: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -53,13 +54,13 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
     return (
         <div className="modal">
             <div className="modal-content">
-                <h3>Cambiar Contraseña</h3>
+                <h3>Change Password</h3>
                 <p style={{ marginBottom: '1.5rem', color: '#94a3b8' }}>
-                    Por favor, establece una nueva contraseña para continuar.
+                    Please set a new password to continue.
                 </p>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Nueva Contraseña</label>
+                        <label>New Password</label>
                         <input
                             type="password"
                             value={newPassword}
@@ -67,11 +68,11 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
                             required
                             minLength={6}
                             disabled={loading}
-                            placeholder="Mínimo 6 caracteres"
+                            placeholder="Minimum 6 characters"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Confirmar Contraseña</label>
+                        <label>Confirm Password</label>
                         <input
                             type="password"
                             value={confirmPassword}
@@ -79,15 +80,15 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
                             required
                             minLength={6}
                             disabled={loading}
-                            placeholder="Repite la contraseña"
+                            placeholder="Repeat password"
                         />
                     </div>
                     <div className="form-actions">
                         <button type="submit" disabled={loading}>
-                            {loading ? 'Actualizando...' : 'Cambiar Contraseña'}
+                            {loading ? 'Updating...' : 'Change Password'}
                         </button>
                         <button type="button" onClick={onCancel} disabled={loading}>
-                            Cancelar
+                            Cancel
                         </button>
                     </div>
                 </form>

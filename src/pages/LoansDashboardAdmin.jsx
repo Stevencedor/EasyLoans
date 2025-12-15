@@ -110,13 +110,13 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
 
     const handlePaymentClick = async (loanId) => {
         try {
-            // Obtener datos completos del préstamo
+            // Get loan details
             const loanData = await loanService.getLoanById(loanId);
 
-            // Obtener pagos relacionados al préstamo
+            // Get payments related to the loan
             const paymentsData = await paymentService.getPaymentsByLoanId(loanId);
 
-            // Agregar pagos al objeto del préstamo
+            // Add payments to the loan object
             loanData.payments = paymentsData || [];
 
             setSelectedLoanId(loanId);
@@ -141,7 +141,7 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
         setNewPayment({ amount: '', date: new Date().toISOString().split('T')[0] });
     }
 
-    // Calcular preview del pago en tiempo real
+    // Calculate payment preview in real-time
     const calculatePaymentPreview = (paymentDate, paymentAmount) => {
         if (!selectedLoanData || !paymentDate) return null;
 
@@ -150,7 +150,7 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
             const interestAtPayment = selectedLoanData.amount * (selectedLoanData.interest_rate / 100) * monthsUntilPayment;
             const totalWithInterest = selectedLoanData.amount + interestAtPayment;
 
-            // Obtener pagos previos: selectedLoanData trae payment_data si existe
+            // Get previous payments: selectedLoanData includes payment_data if it exists
             const previousPayments = selectedLoanData.payments || [];
             const totalPreviousPayments = previousPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
 
@@ -174,7 +174,7 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
         }
     };
 
-    // Actualizar preview cuando cambie la fecha o el monto
+    // Update preview when date or amount changes
     React.useEffect(() => {
         if (isAddingPayment && selectedLoanData && (newPayment.date || newPayment.amount)) {
             const preview = calculatePaymentPreview(newPayment.date, newPayment.amount);
@@ -195,17 +195,17 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
         }
 
         try {
-            // Insertar nuevo pago en tabla payments
+            // Insert new payment into payments table
             await paymentService.addPayment({
                 loan_id: selectedLoanId,
                 amount: newPayment.amount,
                 payment_date: newPayment.date
             });
 
-            // Determinar el nuevo estado del préstamo si está pagado
+            // Determine the new loan status if fully paid
             const newStatus = paymentPreview.willBePaidOff ? 'paid' : 'active';
 
-            // Actualizar estado del préstamo si es necesario
+            // Update loan status if necessary
             if (paymentPreview.willBePaidOff) {
                 await loanService.updateLoanStatus(selectedLoanId, newStatus);
             }
@@ -488,7 +488,7 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
                                     </td> :
                                     <td className="text-right font-mono text-success font-bold" data-label="Remaining">{"$0"}</td>}
                                 <td className="text-center" data-label="Action">
-                                    {loan.status === 'active' ? <button type="submit" onClick={() => handlePaymentClick(loan.id)}>Make a Payment</button> : 'Paid'}
+                                    {loan.status === 'active' ? <button className="btn-pay" type="submit" onClick={() => handlePaymentClick(loan.id)}>Make a Payment</button> : 'Paid'}
                                 </td>
                                 {/*<td className="text-center">
                                         {loan.is_request == true ? (<><button type="submit" onClick={() => handleApproveRequest(loan.id)}>Approve</button> <button type="submit" onClick={() => handleRejectRequest(loan.id)}>Reject</button></>) : 'Non-request'}

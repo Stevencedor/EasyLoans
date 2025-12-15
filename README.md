@@ -5,7 +5,8 @@ This is a project for loans management and visualizations.
 ## Previous Requirements
 
 Make sure you have installed [Node.js](https://nodejs.org/) in your machine.  
-I recommend using pnpm as your package manager for a better performance and security. (We all ready know what is happening in npm 🤫)
+> [!TIP]
+> I recommend using pnpm as your package manager for a better performance and security. (We all ready know what is happening in npm 🤫)
 
 ## Installation
 

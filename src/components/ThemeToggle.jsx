@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 const ThemeToggle = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Cargar tema desde localStorage
+        // Load theme from localStorage
         const savedTheme = localStorage.getItem('appTheme');
         if (savedTheme) {
             return savedTheme === 'dark';
         }
-        // Detectar preferencia del sistema
+        // Detect system preference
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
     useEffect(() => {
-        // Aplicar tema al HTML
+        // Apply theme to HTML
         const htmlElement = document.documentElement;
         if (isDarkMode) {
             htmlElement.setAttribute('data-theme', 'dark');
@@ -31,7 +31,7 @@ const ThemeToggle = () => {
         <button
             onClick={toggleTheme}
             className="btn-icon"
-            title={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            title={isDarkMode ? 'Change to light mode' : 'Change to dark mode'}
             aria-label="Toggle theme"
             style={{
                 position: 'relative',
@@ -44,7 +44,7 @@ const ThemeToggle = () => {
             }}
         >
             {isDarkMode ? (
-                // Icono de sol (para modo oscuro)
+                // Sun icon (for dark mode)
                 <svg
                     width="20"
                     height="20"
@@ -66,7 +66,7 @@ const ThemeToggle = () => {
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
                 </svg>
             ) : (
-                // Icono de luna (para modo claro)
+                // Moon icon (for light mode)
                 <svg
                     width="20"
                     height="20"

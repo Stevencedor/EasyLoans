@@ -6,7 +6,7 @@ import Footer from './components/Footer.jsx';
 import { ToastProvider } from './context/ToastContext';
 import { AuthProvider } from './context/AuthContext';
 
-// Inicializar tema desde localStorage
+// Initialize theme from localStorage
 const initTheme = () => {
     const savedTheme = localStorage.getItem('appTheme');
     if (savedTheme) {
@@ -14,7 +14,7 @@ const initTheme = () => {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
     } else {
-        // Detectar preferencia del sistema
+        // Detect system preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (prefersDark) {
             document.documentElement.setAttribute('data-theme', 'dark');
