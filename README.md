@@ -2,6 +2,12 @@
 
 This is a project for loans management and visualizations.
 
+[![React](https://img.shields.io/badge/React-19.2.1-blue.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.10-blue.svg)](https://vite.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-2.86.0-blue.svg)](https://supabase.com/)
+[![Material UI](https://img.shields.io/badge/Material_UI-7.0-purple.svg)](https://mui.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Previous Requirements
 
 Make sure you have installed [Node.js](https://nodejs.org/) in your machine.  
