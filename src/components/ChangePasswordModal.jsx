@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import bcrypt from 'bcryptjs';
 import { supabase } from '../services/supabaseClient';
+import { useToast } from '../context/ToastContext';
 
 const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
+    const { addToast } = useToast();
+    const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -11,19 +14,44 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            
-            toast.error('Passwords don\'t match');
+            addToast('Passwords don\'t match', 'error');
             return;
         }
 
         if (newPassword.length < 6) {
-            toast.error('Password must be at least 6 characters long');
+            addToast('Password must be at least 6 characters long', 'error');
             return;
         }
 
         setLoading(true);
 
         try {
+            // Get current user password hash
+            const { data: user, error: fetchError } = await supabase
+                .from('users')
+                .select('password_hash')
+                .eq('id', userId)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            // Verify current password
+            const isCurrentValid = await bcrypt.compare(currentPassword, user.password_hash);
+            if (!isCurrentValid) {
+                addToast('Incorrect current password', 'error');
+                setLoading(false);
+                return;
+            }
+
+            // Check if new password is same as old
+            const isSameAsOld = await bcrypt.compare(newPassword, user.password_hash);
+            if (isSameAsOld) {
+                
+                addToast('New password cannot be the same as the current password', 'error');
+                setLoading(false);
+                return;
+            }
+
             // Hash the new password
             const salt = await bcrypt.genSalt(10);
             const passwordHash = await bcrypt.hash(newPassword, salt);
@@ -41,11 +69,11 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
 
             if (error) throw error;
 
-            toast.success('Password updated successfully');
+            addToast('Password updated successfully', 'success');
             onPasswordChanged();
         } catch (error) {
             console.error('Error updating password:', error);
-            toast.error('Error updating password: ' + error.message);
+            addToast('Error updating password: ' + error.message, 'error');
         } finally {
             setLoading(false);
         }
@@ -56,9 +84,20 @@ const ChangePasswordModal = ({ userId, onPasswordChanged, onCancel }) => {
             <div className="modal-content">
                 <h3>Change Password</h3>
                 <p style={{ marginBottom: '1.5rem', color: '#94a3b8' }}>
-                    Please set a new password to continue.
+                    Please verify your current password and set a new one.
                 </p>
                 <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Current Password</label>
+                        <input
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            required
+                            disabled={loading}
+                            placeholder="Enter current password"
+                        />
+                    </div>
                     <div className="form-group">
                         <label>New Password</label>
                         <input
