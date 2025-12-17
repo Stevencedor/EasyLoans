@@ -236,9 +236,9 @@ const LoansDashboardAdmin = ({ name, handleLogout }) => {
             </div>
 
             <div>
-                <button className="btn-secondary" onClick={handleLogout}>Log out</button>
                 <button className="btn-primary" onClick={handleAddLoanClick}>Add Loan</button>
                 <button className="btn-primary" onClick={handleAddUserClick}>Add User</button>
+                <button className="btn-secondary" onClick={handleLogout}>Log out</button>
             </div>
 
             {isAddingLoan && (

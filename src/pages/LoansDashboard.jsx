@@ -33,6 +33,11 @@ const LoansDashboard = ({ name, handleLogout }) => {
         setAllLoans(!AllLoans);
     };
 
+    const handlePaymentPSE = () => {
+     const url = "https://clientes.nequi.com.co/recargas"; // change for bank url
+     window.open(url, "_blank")
+    };
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
@@ -63,6 +68,7 @@ const LoansDashboard = ({ name, handleLogout }) => {
                                 <th className="text-center">Payments</th>
                                 <th className="text-center">Last Payment Day</th>
                                 <th className="text-center">Remaining to pay</th>
+                                <th className="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +93,9 @@ const LoansDashboard = ({ name, handleLogout }) => {
                                                 {"$ " + (loan.remaining ?? 0).toLocaleString()}
                                             </td>
                                     }
+                                    <td className="text-center" data-label="Action">
+                                        {loan.status === 'active' ? <button className="btn-pay" type="submit" onClick={handlePaymentPSE}>Make a Payment</button> : 'Paid'}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
