@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Easy Loans logo">
+	<defs>
+		<linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+			<stop offset="0%" stop-color="#2563EB"/>
+			<stop offset="100%" stop-color="#06B6D4"/>
+		</linearGradient>
+		<linearGradient id="g2" x1="0" x2="1" y1="0" y2="1">
+			<stop offset="0%" stop-color="#10B981"/>
+			<stop offset="100%" stop-color="#84CC16"/>
+		</linearGradient>
+	</defs>
+
+	<!-- Background rounded square -->
+	<rect x="8" y="8" width="240" height="240" rx="36" fill="url(#g1)" opacity="0.95"/>
+
+	<!-- Shield shape to represent security/trust -->
+	<path d="M128 44c-34 0-56 22-56 54 0 58 56 86 56 86s56-28 56-86c0-32-22-54-56-54z" fill="#ffffff" opacity="0.06"/>
+
+	<!-- Coin stack -->
+	<g transform="translate(84,78)">
+		<ellipse cx="44" cy="16" rx="36" ry="12" fill="url(#g2)" />
+		<ellipse cx="44" cy="36" rx="36" ry="12" fill="#FDE68A" opacity="0.95" />
+		<ellipse cx="44" cy="56" rx="36" ry="12" fill="#F59E0B" opacity="0.95" />
+		<rect x="8" y="16" width="72" height="40" rx="8" fill="#F59E0B" opacity="0.0" />
+	</g>
+
+	<!-- Dollar / currency symbol centered -->
+	<g transform="translate(120,118) scale(1.1)" fill="#0F172A" stroke="#0F172A" stroke-width="0">
+		<path d="M-8 -28c0-6 8-8 16-8s16 2 16 8c0 6-8 8-16 8s-16 2-16 8c0 6 8 8 16 8s16-2 16-8" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+		<text x="0" y="32" text-anchor="middle" font-family="Inter, Roboto, Arial, sans-serif" font-size="44" font-weight="700" fill="#fff" dy="0">$</text>
+	</g>
+
+	<!-- Project name (small) -->
+	<text x="50%" y="180" text-anchor="middle" font-family="sans-serif" font-size="30" fill="#ffffff" opacity="0.95">Easy Loans</text>
+
+</svg>
