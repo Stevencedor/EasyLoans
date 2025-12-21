@@ -12,9 +12,13 @@ const Home = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Recovery state
+    const [showRecover, setShowRecover] = useState(false);
+    const [recoverUsername, setRecoverUsername] = useState('');
+    const [recoverEmail, setRecoverEmail] = useState('');
+
     const handleLogin = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setLoading(true);
 
         try {
@@ -75,6 +79,57 @@ const Home = () => {
         }
     };
 
+    const handleRecover = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        try {
+            // Verify user exists with matching email
+            const { data: users, error: dbError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('username', recoverUsername)
+                .eq('email', recoverEmail)
+                .limit(1);
+
+            if (dbError) throw dbError;
+
+            if (!users || users.length === 0) {
+                addToast('No account found with these details.', 'error');
+                setLoading(false);
+                return;
+            }
+
+            const user = users[0];
+
+            // Generate temporary password
+            const tempPassword = `Temp${Math.random().toString(36).slice(-6)}`;
+            const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+            // Update user password
+            const { error: updateError } = await supabase
+                .from('users')
+                .update({
+                    password_hash: hashedPassword,
+                    requires_password_change: true
+                })
+                .eq('id', user.id);
+
+            if (updateError) throw updateError;
+
+            addToast(`Password reset! Temporary password: ${tempPassword}`, 'success', 10000); // Long duration to copy
+            setShowRecover(false);
+            setRecoverUsername('');
+            setRecoverEmail('');
+
+        } catch (error) {
+            console.error('Error during recovery:', error);
+            addToast('Error resetting password: ' + error.message, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="login-container">
             <div style={{ position: 'absolute', top: '1rem', right: '1rem' }}>
@@ -87,39 +142,77 @@ const Home = () => {
                 <p>Manage your loans efficiently and securely.</p>
             </div>
 
-            <form onSubmit={handleLogin}>
-                <div className="form-group">
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        placeholder="Enter your username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </div>
+            {!showRecover ? (
+                // Login Form
+                <form onSubmit={handleLogin}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input
+                            type="text"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </div>
 
-                <div className="form-group">
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </div>
 
-                <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
-            </form>
+                    <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
 
-            <div className="login-footer">
-                <p>Forgot password? <a href="#" onClick={(e) => { e.preventDefault(); addToast('Contact administrator', 'info'); }}>Recover it</a></p>
-            </div>
+                    <div className="login-footer">
+                        <p>Forgot password? <a href="#" onClick={(e) => { e.preventDefault(); setShowRecover(true); }}>Recover it</a></p>
+                    </div>
+                </form>
+            ) : (
+                // Recovery Form
+                <form onSubmit={handleRecover}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input
+                            type="text"
+                            placeholder="Enter your username"
+                            value={recoverUsername}
+                            onChange={(e) => setRecoverUsername(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            placeholder="Enter your registered email"
+                            value={recoverEmail}
+                            onChange={(e) => setRecoverEmail(e.target.value)}
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
+                        {loading ? 'Processing...' : 'Reset Password'}
+                    </button>
+
+                    <div className="login-footer">
+                        <p>Remembered it? <a href="#" onClick={(e) => { e.preventDefault(); setShowRecover(false); }}>Back to Login</a></p>
+                    </div>
+                </form>
+            )}
 
             <div className="footer-links">
                 <a href="#">Terms</a>
