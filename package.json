@@ -2,7 +2,7 @@
   "name": "easy-loans",
   "private": true,
   "version": "1.0.0",
-  "homepage": "https://stevencedor.github.io/easyloans",
+  "homepage": "https://stevencedor.github.io/EasyLoans",
   "scripts": {
     "start": "react-scripts start",
     "build": "vite build",
