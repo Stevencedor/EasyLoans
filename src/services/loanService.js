@@ -5,7 +5,7 @@ export const loanService = {
     async getAllLoansWithDetails() {
         const { data: loansData, error: loansError } = await supabase
             .from('loans')
-            .select('*, users(name)')
+            .select('*, users(name, codebtor_id)')
             .order('id', { ascending: true });
 
         if (loansError) throw loansError;
@@ -49,6 +49,7 @@ export const loanService = {
             return {
                 id: loan.id,
                 user: loan.users.name,
+                codebtor_id: loan.users.codebtor_id,
                 created_at: new Date(loan.created_at).toLocaleString(),
                 reason: loan.reason,
                 total: loan.amount,
@@ -103,6 +104,6 @@ export const loanService = {
 
     async getLoansByUserId(userId) {
         const allLoans = await this.getAllLoansWithDetails();
-        return allLoans.filter(loan => loan.user_id === userId);
+        return allLoans.filter(loan => loan.user_id === userId || loan.codebtor_id === userId);
     }
 };
