@@ -33,3 +33,4 @@ password-hashes.txt
 generate-hashes.js
 seed_data.sql
 deployment.md
+password-creation.md
